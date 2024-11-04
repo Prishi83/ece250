@@ -22,11 +22,11 @@ public:
 
 private:
     int hashtable_size;  // Size of hash table
-    int hash_type;   // Type of hashing (0 = open addressing; 1 = chaining)
     vector<FileBlock*> hash_table; // Vector ("hash_table") of pointers (dynamic array used to rep. hash table)
                                    // Each entry is a slot in the hash_table
                                    // Each element is a pointer to a Fileblock instance (dynamically allocate FileBlock objects)
                                    // Empty slots rep. by nullptr
+    int hash_func_type;   // Type of hashing (0 = open addressing; 1 = separate chaining)
     int hash_func_1(int key) const;  // Primary hash function
     int hash_func_2(int key) const;  // Secondary hash function for double hashing
 };
