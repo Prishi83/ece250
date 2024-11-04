@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Hashtable.h"
 using namespace std;
-//#include <vector>
 
 int main() {
     Hashtable hashtable;   // Create an object of the Hashtable class
@@ -37,14 +36,14 @@ int main() {
             int ID;
             cin >> ID;
 
-            hashtable.search_key(ID);
+            hashtable.search_file_block(ID);
         }
 
         else if (command == "DELETE") {
             int ID;
             cin >> ID;
 
-            hashtable.delete_key(ID);
+            hashtable.delete_file_block(ID);
         }
 
         else if (command == "CORRUPT") {
@@ -72,10 +71,10 @@ int main() {
         }
 
         else if (command == "PRINT") {
-            int C_ID;
-            cin >> C_ID;
+            int i;
+            cin >> i;
 
-            hashtable.print(C_ID);
+            hashtable.print(i);
         }
 
         else if (command == "EXIT") {
