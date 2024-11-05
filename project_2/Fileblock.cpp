@@ -64,6 +64,7 @@ int Fileblock::get_id() {  // id = private member of Fileblock class, so this me
 }
 
 
+// Generate new checksum and check for corruption by comparing it with the existing checksum
 bool Fileblock::compare_new_checksum() {
     if (compute_checksum() == checksum) {
         return true;
