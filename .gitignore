@@ -3,6 +3,7 @@
 
 # Ignore compiled C++ binaries
 *.o
+*a.out
 
 # Python cache
 __pycache__/
