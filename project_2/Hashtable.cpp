@@ -15,20 +15,22 @@ Hashtable::Hashtable() {
 // Destructor definition
 Hashtable::~Hashtable() {
     for (int i = 0; i < hashtable_size; i++) {
-        for (int j = 0; j < hash_table[i].size(); j++) {  // Free memory for each Fileblock in the chains
-            delete hash_table[i][j];
-            hash_table[i][j] = nullptr;
+        if (!hash_table[i].empty()) { // If slot contains any file blocks delete the memory
+            for (size_t j = 0; j < hash_table[i].size(); j++) {
+                delete hash_table[i][j];
+            }
+            hash_table[i].clear(); // Clear the vector
         }
     }
 }
 
 
-int Hashtable::hash_func_1(int key) const {
+int Hashtable::hash_func_1(int key) {
     return key % hashtable_size;
 }
 
 
-int Hashtable::hash_func_2(int key) const {
+int Hashtable::hash_func_2(int key) {
     int result = (key/hashtable_size) % hashtable_size;
     if (result % 2 == 0) {  // Add 1 if result is an even number (only want odd numbers)
         result++;
@@ -41,7 +43,8 @@ void Hashtable::new_hashtable(int N, int T) {
     hash_func_type = T;   // Type of hashing (0 = open addressing; 1 = separate chaining)
     hashtable_size = N;   // Size of hash table
     hash_table.clear();   // Remove any existing elements in the vector
-    hash_table.resize(N);   // N is the size of the vector (hash_table)
+    hash_table.resize(N);  // Reset size of vector (hash_table)
+
     cout << "success" << endl;
 }
 
@@ -58,7 +61,7 @@ void Hashtable::store_file_block(int ID, char* payload) {
         // Probe hash table until an empty spot is found where a new file block can be inserted
         // != nullptr means the slot is occupied
         // != ID means there is a collision, so probe to find next slot; the same ID means it's a duplicate so stop probing
-        while ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() != ID)) {
+        while ((!hash_table[new_index].empty()) && ((*hash_table[new_index][0]).get_id() != ID)) {
             i++;
             new_index = (func1_index + (i * func2_index)) % hashtable_size; // Double hashing to find new index for probing next slot
 
@@ -68,8 +71,8 @@ void Hashtable::store_file_block(int ID, char* payload) {
             }
         }
 
-        if (hash_table[new_index] == nullptr) {    // Insert new file block when an empty slot is found
-            hash_table[new_index] = new Fileblock(ID, payload);
+        if (hash_table[new_index].empty()) {    // Insert new file block when an empty slot is found
+            hash_table[new_index].push_back(new Fileblock(ID, payload));
             cout << "success" << endl;
         }
         else {    // if ID already exists in hashtable (don't want to add duplicates)
@@ -82,7 +85,7 @@ void Hashtable::store_file_block(int ID, char* payload) {
         bool ID_found = false;
 
         // Check if ID is already in the slot
-        for (int j = 0; j < hash_table[func1_index].size; j++) {  // Loop through chain in the slot to compare each ID in the chain with the key
+        for (int j = 0; j < hash_table[func1_index].size(); j++) {  // Loop through chain in the slot to compare each ID in the chain with the key
             if ((*hash_table[func1_index][j]).get_id() == ID) {   // ID exists in the chain
                 ID_found = true;
                 break;
@@ -109,7 +112,7 @@ void Hashtable::search_file_block(int ID) {
         int i = 0;
         int new_index = func1_index;
         
-        while ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() != ID)) {
+        while ((!hash_table[new_index].empty()) && ((*hash_table[new_index][0]).get_id() != ID)) {
             i++;
             new_index = (func1_index + (i * func2_index)) % hashtable_size; // Double hashing to find new index for probing next slot
 
@@ -118,7 +121,7 @@ void Hashtable::search_file_block(int ID) {
             }
         }
 
-        if ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() == ID)) {
+        if ((!hash_table[new_index].empty()) && ((*hash_table[new_index][0]).get_id() == ID)) {
             cout << "found " << ID << " in " << new_index << endl;
         } else {
             cout << "not found" << endl;
@@ -150,7 +153,7 @@ void Hashtable::delete_file_block(int ID) {
         // Probe hash table until an empty spot is found
         // != nullptr means the slot is occupied
         // != ID means there is a collision, so probe to find next slot; the same ID means it's a duplicate so stop probing
-        while ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() != ID)) {
+        while ((!hash_table[new_index].empty()) && ((*hash_table[new_index][0]).get_id() != ID)) {
             i++;
             new_index = (func1_index + (i * func2_index)) % hashtable_size; // Double hashing to find new index for probing next slot
 
@@ -158,9 +161,9 @@ void Hashtable::delete_file_block(int ID) {
                 break;
             }
         }
-        if ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() == ID)) {
-            delete hash_table[new_index];
-            hash_table[new_index] = nullptr;
+        if ((!hash_table[new_index].empty()) && ((*hash_table[new_index][0]).get_id() == ID)) {
+            delete hash_table[new_index][0];
+            hash_table[new_index].clear();
             cout << "success" << endl;
         }
         else {    // if ID does not exist in hashtable
@@ -171,11 +174,10 @@ void Hashtable::delete_file_block(int ID) {
     // Separate chaining:
     else if (hash_func_type == 1) {
         // Check if ID is already in the slot
-        for (int j = 0; j < hash_table[func1_index].size; j++) {  // Loop through chain in the slot to compare each ID in the chain with the key
+        for (int j = 0; j < hash_table[func1_index].size(); j++) {  // Loop through chain in the slot to compare each ID in the chain with the key
             if ((*hash_table[func1_index][j]).get_id() == ID) {   // ID exists in the chain
                 delete hash_table[func1_index][j];
                 hash_table[func1_index].erase(hash_table[func1_index].begin() + j);
-                hash_table[func1_index] = nullptr;
                 cout << "success" << endl;
                 return;
             }
@@ -197,7 +199,7 @@ void Hashtable::corrupt_file_block(int ID, char* payload) {
         // Probe hash table until an empty spot is found
         // != nullptr means the slot is occupied
         // != ID means there is a collision, so probe to find next slot; the same ID means it's a duplicate so stop probing
-        while ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() != ID)) {
+        while ((!hash_table[new_index].empty()) && ((*hash_table[new_index][0]).get_id() != ID)) {
             i++;
             new_index = (func1_index + (i * func2_index)) % hashtable_size;
 
@@ -207,9 +209,9 @@ void Hashtable::corrupt_file_block(int ID, char* payload) {
             }
         }
 
-        if ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() == ID)) {
-            (*hash_table[new_index]).set_payload(nullptr, false);  // Set all chars in payload to nullptr ('\0' or 0)
-            (*hash_table[new_index]).set_payload(payload, false);  // Set new payload without calculating checksum
+        if ((!hash_table[new_index].empty()) && ((*hash_table[new_index][0]).get_id() == ID)) {
+            (*hash_table[new_index][0]).set_payload(nullptr, false);  // Set all chars in payload to nullptr ('\0' or 0)
+            (*hash_table[new_index][0]).set_payload(payload, false);  // Set new payload without calculating checksum
             cout << "success" << endl;
         } 
         else {
@@ -242,7 +244,7 @@ void Hashtable::validate_file_block(int ID) {
         int new_index = func1_index;
 
         // Probe hash table until the ID is found
-        while ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() != ID)) {
+        while ((!hash_table[new_index].empty()) && ((*hash_table[new_index][0]).get_id() != ID)) {
             i++;
             new_index = (func1_index + (i * func2_index)) % hashtable_size;
 
@@ -253,8 +255,8 @@ void Hashtable::validate_file_block(int ID) {
         }
 
         // Check if the ID is at new_index
-        if ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() == ID)) {
-            if ((*hash_table[new_index]).compare_new_checksum()) {    // Check the checksum for the file block
+        if ((!hash_table[new_index].empty()) && ((*hash_table[new_index][0]).get_id() == ID)) {
+            if ((*hash_table[new_index][0]).compare_new_checksum()) {    // Check the checksum for the file block
                 cout << "valid" << endl;    // File block with given ID exists, and its checksum matches  the new computed checksum
             } 
             else {
