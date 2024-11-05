@@ -9,14 +9,13 @@ using namespace std;
 Fileblock::FileBlock(int id_input, char* payload_input) {
     id = id_input;  // Initialize id with input parameter
 
-    for (int i=0; i<500; i++) {           // Initialize payload array with input parameter by copying each character
+    for (int i=0; i < 500; i++) {           // Initialize payload array with the payload input parameter by copying each character
+        payload[i] = payload_input[i];
         if (payload_input[i] == '\0') {
-            payload[i] = payload_input[i];
             break;
         }
-        payload[i] = payload_input[i];        
     }
-    checksum = compute_checksum();
+    checksum = compute_checksum();  // Initial checksum for the file block
 }
 
 
@@ -25,21 +24,50 @@ Fileblock::~FileBlock() {
 }
 
 
+// Compute the checksum by sum of the ASCII values of the payload characters modulo 256
 int Fileblock::compute_checksum() const {
-    return 0;
+    int payload_chars_sum = 0;   // Add up the ASCII values of the characters in the payload
+    for (int i=0; (i < 500) && (payload[i] != '\0'); i++) {
+        payload_chars_sum += payload[i];    // Directly add the chars since += will automatically add the ASCII value of each char
+    }
+    return payload_chars_sum % 256;
 }
 
 
-void Fileblock::set_payload(char* payload, bool updateChecksum) {
-    
+// Used to corrupt the file block (used in Hashtable.cpp)
+// Sets new data for the payload and gives the option to update the checksum
+void Fileblock::set_payload(char* new_payload, bool updateChecksum) {
+    // Zero the array of chars (payload) if new_payload = nullptr
+    if (new_payload == nullptr) {
+        for (int i=0; i<500; i++) {
+            payload[i] = '\0';
+        }
+    }
+    else {
+        for (int i = 0; i < 500; i++) {     // Populate payload array with the new payload data by copying each character
+            payload[i] = payload_input[i];
+            if (payload_input[i] == '\0') {
+                break;
+            }
+        }
+    }
+
+    if (updateChecksum) {
+        checksum = compute_checksum();  // Recalculate checksum if input parameter is true
+    }
 }
 
 
-int Fileblock::get_id() const {  // id = private member of Fileblock class, so method needed in order to use id in Hashtable class
+int Fileblock::get_id() const {  // id = private member of Fileblock class, so this method needed to use id in Hashtable class
     return id;
 }
 
 
-bool Fileblock::compute_new_checksum() const {
-    return true;
+bool Fileblock::compare_new_checksum() const {
+    if (compute_checksum() == checksum) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }

@@ -254,7 +254,7 @@ void Hashtable::validate_file_block(int ID) {
 
         // Check if the ID is at new_index
         if ((hash_table[new_index] != nullptr) && ((*hash_table[new_index]).get_id() == ID)) {
-            if ((*hash_table[new_index]).compute_new_checksum()) {    // Check the checksum for the file block
+            if ((*hash_table[new_index]).compare_new_checksum()) {    // Check the checksum for the file block
                 cout << "valid" << endl;    // File block with given ID exists, and its checksum matches  the new computed checksum
             } 
             else {
@@ -270,7 +270,7 @@ void Hashtable::validate_file_block(int ID) {
         // Loop through the chain to find the ID
         for (int j = 0; j < hash_table[func1_index].size(); j++) {
             if ((*hash_table[func1_index][j]).get_id() == ID) {
-                if ((*hash_table[func1_index][j]).compute_new_checksum()) {    // Check the checksum for the file block
+                if ((*hash_table[func1_index][j]).compare_new_checksum()) {    // Check the checksum for the file block
                     cout << "valid" << endl;    // File block with given ID exists, and its checksum matches  the new computed checksum
                 } else {
                     cout << "invalid" << endl;  // File block with given ID exists, but its checksum does not match the new computed checksum 
