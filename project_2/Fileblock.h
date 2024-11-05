@@ -14,7 +14,7 @@ public:
 
     void set_payload(char* payload, bool updateChecksum = true);  // Set new data, optionally update checksum
     int get_id() const;  // Returns ID of the file block
-    bool validate_checksum() const;  // Validate checksum to check for corruption
+    bool compute_new_checksum() const;  // Generate new checksum to check for corruption by comparing with existing checksum
 
 private:
     int id;  // Unique ID for file block

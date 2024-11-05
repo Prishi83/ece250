@@ -4,7 +4,10 @@
         "new": "cpp",
         "ostream": "cpp",
         "vector": "cpp",
-        "print": "cpp"
+        "print": "cpp",
+        "__split_buffer": "cpp",
+        "deque": "cpp",
+        "string": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

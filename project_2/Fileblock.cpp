@@ -30,7 +30,7 @@ int Fileblock::compute_checksum() const {
 }
 
 
-void Fileblock::set_payload(char* payload, bool updateChecksum = true) {
+void Fileblock::set_payload(char* payload, bool updateChecksum) {
     
 }
 
@@ -40,6 +40,6 @@ int Fileblock::get_id() const {  // id = private member of Fileblock class, so m
 }
 
 
-bool Fileblock::validate_checksum() const {
+bool Fileblock::compute_new_checksum() const {
     return true;
 }
