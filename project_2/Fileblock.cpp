@@ -1,4 +1,4 @@
-// Manages data in each individual file block (stores ID, data, and computes checksum)
+// Manages data in each individual file block (stores ID, data and computes checksum)
 
 #include "Fileblock.h"
 #include <iostream>
