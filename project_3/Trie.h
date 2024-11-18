@@ -21,13 +21,13 @@ public:
     ~Trie();  // Destructor
 
     void load_input(string filename);  // LOAD classifications from an input file
-    bool insert(string classification);  // INSERT classification into trie
-    string classify(string input);  // CLASSIFY input string using trie
-    bool erase(string classification);   // ERASE (remove) classification and its children
-    string print();   // PRINT all classifications in trie
-    bool is_Empty();  // Check if trie is EMPTY
-    void clear();   // Remove (CLEAR) all nodes from trie
-    int return_size();   // Return SIZE of trie
+    bool insert_classification(string classification);  // INSERT classification into trie
+    string classify_input(string input);  // CLASSIFY input string using trie
+    bool erase_classification(string classification);   // ERASE (remove) classification and its children
+    string print_classifications();   // PRINT all classifications in trie
+    bool is_trie_empty();  // Check if trie is EMPTY
+    void clear_all_node();   // Remove (CLEAR) all nodes from trie
+    int return_trie_size();   // Return SIZE of trie
 };
 
 #endif

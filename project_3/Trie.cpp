@@ -25,42 +25,42 @@ void Trie::load_input(string filename) {
 };
 
 // INSERT classification into trie
-bool Trie::insert(string classification) {
+bool Trie::insert_classification(string classification) {
 
 }
 
 
 // CLASSIFY input string using trie
-string Trie::classify(string input) {
+string Trie::classify_input(string input) {
 
 }
 
 
 // ERASE (remove) classification and its children
-bool Trie::erase(string classification) {
+bool Trie::erase_classification(string classification) {
 
 }
 
 
 // PRINT all classifications in trie
-string Trie::print() {
+string Trie::print_classifications() {
 
 }
 
 
 // Check if trie is EMPTY
-bool Trie::is_Empty() {
+bool Trie::is_trie_empty() {
 
 }
 
 
 // Remove (CLEAR) all nodes from trie
-void Trie::clear() {
+void Trie::clear_all_node() {
 
 }
 
 
 // Return SIZE of trie
-int Trie::return_size() {
+int Trie::return_trie_size() {
 
 }

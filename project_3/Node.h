@@ -7,7 +7,7 @@ using namespace std;
 
 class Node {
 private:
-    vector<Node*> children;  // Fixed-size vector of child nodes
+    vector<Node*> children;  // Vector of child nodes
     bool isTerminal;   // Indicates if the node is a terminal node
     string value;    // The classification value stored in the node
 

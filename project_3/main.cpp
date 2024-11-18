@@ -35,7 +35,7 @@ int main() {
         }
 
         else if (command == "EMPTY") {
-            if (trie.isEmpty()) {
+            if (trie.is_Empty()) {
                 cout << "empty 1" << endl;
             }
             else {
