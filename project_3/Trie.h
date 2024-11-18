@@ -2,6 +2,7 @@
 #define TRIE_H
 
 #include "Node.h"
+#include "illegal_exception.h"
 #include <string>
 #include <vector>
 using namespace std;
@@ -21,12 +22,12 @@ public:
     ~Trie();  // Destructor
 
     void load_input(string filename);  // LOAD classifications from an input file
-    bool insert_classification(string classification);  // INSERT classification into trie
+    void insert_classification(string classification);  // INSERT classification into trie
     string classify_input(string input);  // CLASSIFY input string using trie
     bool erase_classification(string classification);   // ERASE (remove) classification and its children
     string print_classifications();   // PRINT all classifications in trie
     bool is_trie_empty();  // Check if trie is EMPTY
-    void clear_all_node();   // Remove (CLEAR) all nodes from trie
+    void clear_all_nodes();   // Remove (CLEAR) all nodes from trie
     int return_trie_size();   // Return SIZE of trie
 };
 
