@@ -1,5 +1,5 @@
 #include <iostream>
-#include "trie.h"
+#include "Trie.h" // Include the Trie header file
 using namespace std;
 
 int main() {
@@ -18,38 +18,16 @@ int main() {
         else if (command == "INSERT") {
             string classification;
             cin >> classification;
-
-            if (classification.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos) {
-                cout << "illegal argument" << endl;
-            } else if (trie.insert(classification)) {
-                cout << "success" << endl;
-            } else {
-                cout << "failure" << endl;
-            }
         }
 
         else if (command == "CLASSIFY") {
             string input;
             cin >> input;
-
-            if (input.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos) {
-                cout << "illegal argument" << endl;
-            } else {
-                cout << trie.classify(input) << endl;
-            }
         }
 
         else if (command == "ERASE") {
             string classification;
             cin >> classification;
-
-            if (classification.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos) {
-                cout << "illegal argument" << endl;
-            } else if (trie.erase(classification)) {
-                cout << "success" << endl;
-            } else {
-                cout << "failure" << endl;
-            }
         }
 
         else if (command == "PRINT") {
@@ -57,7 +35,12 @@ int main() {
         }
 
         else if (command == "EMPTY") {
-            cout << (trie.isEmpty() ? "empty 1" : "empty 0") << endl;
+            if (trie.isEmpty()) {
+                cout << "empty 1" << endl;
+            }
+            else {
+                cout << "empty 0" << endl;
+            }
         }
 
         else if (command == "CLEAR") {
