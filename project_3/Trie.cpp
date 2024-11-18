@@ -73,13 +73,15 @@ void Trie::insert_classification(string classification) {
         istringstream stream(classification); // Classification string
         string classification_string;   // Used to store the extracted parts of the string input
         bool is_duplicate_classification = true;
+        string alphabet_capital = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         // Parse through classification string by using commas as the delimiter and traverse trie
         while (getline(stream, classification_string, ',')) {
-            for (int i = 0; (i < classification_string.size()); i++) {
-                if ((classification_string[i] >= 'A') && (classification_string[i] <= 'Z')) { // Check for capital letters
-                                                                                              // Comparators automatically use the ASCII value
-                    throw illegal_exception();  // Throw exception if capital letter detected (try-catch block)
+            for (int i=0; i < (classification_string.size()); i++) {
+                for (int j=0; j < (alphabet_capital.size()); j++) {
+                    if ((classification_string[i]) == (alphabet_capital[j])) {  // Check for capital letters
+                        throw illegal_exception();  // Throw exception if capital letter detected (try-catch block)
+                    }
                 }
             }
 
@@ -96,7 +98,6 @@ void Trie::insert_classification(string classification) {
 
             if (!classification_exists) {  // classification_string does not exist in the trie, so insert a new child node
                 is_duplicate_classification = false;
-
                 current->set_terminal_node(false);   // Set terminal node to false since we will add a child to this node
                 Node* new_classification_node = new Node();
                 new_classification_node->set_node_value(classification_string);  // Set the classification_string as the new node's value
@@ -146,13 +147,29 @@ string Trie::print_classifications() {
 
 // Check if trie is EMPTY
 bool Trie::is_trie_empty() {
-
+    if (root->children.empty()) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 
+// Helper function for clear_all_nodes() (recursive approach for O(N) time)
+void delete_children(Node* node) {
+    for (int i=0; i < node->children.size(); i++) {   // run through the children of the current node
+        delete_children(node->children[i]);   // Delete all of the children recursively
+        delete node->children[i];  // Meemory freed
+    }
+    node->children.clear();   // node points to the children vector, so use .clear() to clear all contents (children) of this vector
+}
+
 // Remove (CLEAR) all nodes from trie
 void Trie::clear_all_nodes() {
-
+    delete_children(root);   // Start at the root
+    root->children.clear();  // root points to the children vector, so use .clear() to clear all contents (children) of this vector
+    size = 0;   // Set the size of the trie to 0 since it is cleared
 }
 
 
