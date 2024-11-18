@@ -1,3 +1,6 @@
+// Used in CLASSIFY command to work with the language model classifier
+// Formats input data into JSON, uses HTTP POST to send data to server, parse server's response to get classification
+
 #include "ece250_socket.h"
 #include <iostream>
 #ifdef _WIN32
