@@ -7,22 +7,20 @@ using namespace std;
 
 class Node {
 private:
-    vector<Node*> children; // Fixed-size vector of child nodes
-    bool isTerminal;             // Indicates if the node is a terminal node
-    string value;           // The classification value stored in the node
+    vector<Node*> children;  // Fixed-size vector of child nodes
+    bool isTerminal;   // Indicates if the node is a terminal node
+    string value;    // The classification value stored in the node
 
 public:
-    Node();                      // Constructor
-    ~Node();                     // Destructor
+    Node();   // Constructor
+    ~Node();  // Destructor
 
-    Node* getChild(int index);   // Returns a child node at a specific index
-    void setChild(int index, Node* child); // Sets a child node at a specific index
-
-    bool getIsTerminal();        // Returns whether the node is terminal
-    void setIsTerminal(bool terminal); // Sets the terminal status of the node
-
-    string getValue();      // Returns the value of the node
-    void setValue(string val); // Sets the value of the node
+    Node* return_child_node(int index);   // Return the child node at an index
+    void set_child_node(int index, Node* child);  // Set a child node at an index
+    bool is_terminal_node();    // Returns if the node is a terminal node or not
+    void set_terminal_node(bool terminal);  // Indicate if the node is a terminal node or not
+    string return_node_value();    // Return value of the node
+    void set_node_value(string val); // Set the node's value
 };
 
 #endif

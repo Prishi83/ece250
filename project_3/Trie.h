@@ -8,26 +8,26 @@ using namespace std;
 
 class Trie {
 private:
-    Node* root;      // Root node of the trie
-    int size;        // Number of classifications in the trie
+    Node* root;   // Root node of trie
+    int size;   // # of classifications in trie
 
-    Node* findNode(string classification); // Helper to find a node for a classification
+    // Node* findNode(string classification); // Helper to find a node for a classification
 
-    // Helper function to check for invalid characters (uppercase letters in this case)
-    bool hasInvalidCharacter(string input);
+    // // Helper function to check for invalid characters (uppercase letters in this case)
+    // bool hasInvalidCharacter(string input);
 
 public:
-    Trie();                       // Constructor
-    ~Trie();                      // Destructor
+    Trie();   // Constructor
+    ~Trie();  // Destructor
 
-    bool insert(string classification); // Inserts a classification into the trie
-    bool erase(string classification);  // Removes a classification and its descendants
-    string classify(string input); // Classifies an input using the trie
-    string print();          // Returns all classifications in the trie
-    bool isEmpty();               // Checks if the trie is empty
-    void clear();                 // Clears all nodes from the trie
-    int getSize();                // Returns the size of the trie
-    void loadFromFile(string filename); // Loads classifications from a file
+    void load_input(string filename);  // LOAD classifications from an input file
+    bool insert(string classification);  // INSERT classification into trie
+    string classify(string input);  // CLASSIFY input string using trie
+    bool erase(string classification);   // ERASE (remove) classification and its children
+    string print();   // PRINT all classifications in trie
+    bool is_Empty();  // Check if trie is EMPTY
+    void clear();   // Remove (CLEAR) all nodes from trie
+    int return_size();   // Return SIZE of trie
 };
 
 #endif

@@ -11,7 +11,7 @@ int main() {
             string filename;
             cin >> filename;
 
-            trie.loadFromFile(filename);
+            trie.load_input(filename);
             cout << "success" << endl;
         }
 
@@ -49,7 +49,7 @@ int main() {
         }
 
         else if (command == "SIZE") {
-            cout << "number of classifications is " << trie.getSize() << endl;
+            cout << "number of classifications is " << trie.return_size() << endl;
         }
 
         else if (command == "EXIT") {
