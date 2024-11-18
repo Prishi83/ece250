@@ -7,20 +7,19 @@ using namespace std;
 
 class Node {
 private:
-    vector<Node*> children;  // Vector of child nodes
-    bool isTerminal;   // Indicates if the node is a terminal node
+    bool is_terminal;   // Indicates if the node is a terminal node
     string value;    // The classification value stored in the node
 
 public:
+    vector <Node *> children;  // Vector of child nodes
+
     Node();   // Constructor
     ~Node();  // Destructor
 
-    Node* return_child_node(int index);   // Return the child node at an index
-    void set_child_node(int index, Node* child);  // Set a child node at an index
     bool is_terminal_node();    // Returns if the node is a terminal node or not
-    void set_terminal_node(bool terminal);  // Indicate if the node is a terminal node or not
-    string return_node_value();    // Return value of the node
-    void set_node_value(string val); // Set the node's value
+    void set_terminal_node(bool new_terminal_status);  // Indicate if the node is a terminal node or not
+    string node_value();    // Return value of the node
+    void set_node_value(string new_value); // Set the node's value
 };
 
 #endif
