@@ -1,26 +1,78 @@
-#include "ece250_socket.h"
 #include <iostream>
-#include <sstream> //new include!
+#include "trie.h"
+using namespace std;
 
-int main()
-{
-	//Just for fun, let's reclassify "Dog"
-	std::string text_to_classify = "Dog";
-	std::string candidate_labels = "animal,plant,technology,no thing";
-	std::cout << labelText(text_to_classify,candidate_labels) << std::endl;
+int main() {
+    Trie trie;   // Create an object of the Trie class
+    string command;   // Store input command
 
-	//OK, now let's split a string. In fact, let's split candidate_labels
-	
-	//step 1: make a new stringstring with the contents of our candidate_labels 
-	std::istringstream stream(candidate_labels); //I could have named it anything, like stringin or something
-	
-	//step 2: make a temporary string that we will use to store the extracted parts
-	std::string single_label;
-	
-	//step 3: use the getline function with the comma sent in as a delimiter to read the string parts
-	while(std::getline(stream,single_label,',')){
-		std::cout << single_label << std::endl; //and let's print it just to make sure it worked
-	}
-	
-	return 0;
+    while (cin >> command) {
+        if (command == "LOAD") {
+            string filename;
+            cin >> filename;
+
+            trie.loadFromFile(filename);
+            cout << "success" << endl;
+        }
+
+        else if (command == "INSERT") {
+            string classification;
+            cin >> classification;
+
+            if (classification.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos) {
+                cout << "illegal argument" << endl;
+            } else if (trie.insert(classification)) {
+                cout << "success" << endl;
+            } else {
+                cout << "failure" << endl;
+            }
+        }
+
+        else if (command == "CLASSIFY") {
+            string input;
+            cin >> input;
+
+            if (input.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos) {
+                cout << "illegal argument" << endl;
+            } else {
+                cout << trie.classify(input) << endl;
+            }
+        }
+
+        else if (command == "ERASE") {
+            string classification;
+            cin >> classification;
+
+            if (classification.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos) {
+                cout << "illegal argument" << endl;
+            } else if (trie.erase(classification)) {
+                cout << "success" << endl;
+            } else {
+                cout << "failure" << endl;
+            }
+        }
+
+        else if (command == "PRINT") {
+            cout << trie.print() << endl;
+        }
+
+        else if (command == "EMPTY") {
+            cout << (trie.isEmpty() ? "empty 1" : "empty 0") << endl;
+        }
+
+        else if (command == "CLEAR") {
+            trie.clear();
+            cout << "success" << endl;
+        }
+
+        else if (command == "SIZE") {
+            cout << "number of classifications is " << trie.getSize() << endl;
+        }
+
+        else if (command == "EXIT") {
+            break;
+        }
+    }
+
+    return 0;
 }
