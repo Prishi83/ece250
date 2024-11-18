@@ -157,19 +157,21 @@ bool Trie::is_trie_empty() {
 
 
 // Helper function for clear_all_nodes() (recursive approach for O(N) time)
-void delete_children(Node* node) {
-    for (int i=0; i < node->children.size(); i++) {   // run through the children of the current node
-        delete_children(node->children[i]);   // Delete all of the children recursively
-        delete node->children[i];  // Meemory freed
+void delete_children(Node *node) {
+    for (int i=0; i < node->children.size(); i++) {   // loop through children of the current node
+        delete_children(node->children[i]);   // Delete all the children recursively ('node->children[i]' is the input parameter to the function)
+        delete node->children[i];   // Meemory freed
     }
-    node->children.clear();   // node points to the children vector, so use .clear() to clear all contents (children) of this vector
+    node->children.clear();   // pointer to the node's children vector; use .clear() to clear all contents of this vector (children)
 }
 
 // Remove (CLEAR) all nodes from trie
 void Trie::clear_all_nodes() {
-    delete_children(root);   // Start at the root
-    root->children.clear();  // root points to the children vector, so use .clear() to clear all contents (children) of this vector
+    delete_children(root);   // Start deleting at the root (recursively delete all nodes in the helper function until only root is left)
+    delete root;  // Delete root node
     size = 0;   // Set the size of the trie to 0 since it is cleared
+    root = new Node();  // initialize a new root node
+    cout << "success" << endl;
 }
 
 

@@ -48,7 +48,6 @@ int main() {
 
         else if (command == "CLEAR") {
             trie.clear_all_nodes();
-            cout << "success" << endl;
         }
 
         else if (command == "SIZE") {
