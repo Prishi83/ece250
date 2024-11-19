@@ -1,4 +1,5 @@
 #include "Trie.h"
+#include "ece250_socket.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -134,14 +135,14 @@ void Trie::insert_classification(string classification) {
 
 
 // CLASSIFY input string using trie
-string Trie::classify_input(string input) {
+void Trie::classify_input(string input) {
     try {
         Node* current = root;  // Start at trie's root node
-        istringstream stream(classification); // Classification string
-        string classification_string;   // Used to store the extracted parts of the string input
-        bool is_duplicate_classification = true;
+        istringstream stream(input); // input string
+        string classification_string;   // Used to store parts of the input
+        string output = "";  // Final classification result
 
-        // Parse through classification string by using commas as the delimiter and traverse trie
+        // Parse through string by using commas as the delimiter and traverse trie
         while (getline(stream, classification_string, ',')) {
             check_capital_letter_exception(classification_string);  // Throw exception if captial letter found in helper function
 
@@ -156,33 +157,33 @@ string Trie::classify_input(string input) {
                 }
             }
 
-            if (!classification_exists) {  // classification_string does not exist in the trie, so insert a new child node
-                is_duplicate_classification = false;
-                current->set_terminal_node(false);   // Set terminal node to false since we will add a child to this node
-                Node* new_classification_node = new Node();
-                new_classification_node->set_node_value(classification_string);  // Set the classification_string as the new node's value
-                current->children.push_back(new_classification_node);  // Add new node to the children vector
-                current = new_classification_node;  // Move to new child node
+            //Append classification string to outpt
+            if (output != "") {
+                output += ",";
             }
+            output += classification_string;
         }
 
-        // Check if current node is a duplicate classification and is a terminal node
-        if (is_duplicate_classification && current->is_terminal_node()) {
-            cout << "failure" << endl;
-            return;
+        // Get classifications of current node's children
+        string classifications = "";
+        for (int i = 0; i < current->children.size(); i++) {
+            if (i>0) {
+                classifications += ",";  // comma between classifications
+            }
+            classifications += current->children[i]->node_value();
         }
 
-        // Mark the terminal node if its not a dpulicate and it has no children
-        if (!is_duplicate_classification) {
-            current->set_terminal_node(true);   // Method implemented in Node class
-            size++;  // Update trie's size
+        // Get classified output from the classifiern and add it to the output
+        if (classifications != ""){
+            string classifier_classification = labelText(input, classifications);
+            output += "," + classifier_classification;
         }
 
-        cout << "success" << endl;  // Insertion was successful
-    }
-
+        cout << output << endl;
+    } 
+    
     catch (illegal_exception) {
-        cout << "illegal argument" << endl;   // Print if capital letters detected in classification
+        cout << "illegal argument" << endl;  // if capital letters aredetected in classification
     }
 }
 

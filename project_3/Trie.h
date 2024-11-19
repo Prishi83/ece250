@@ -23,7 +23,7 @@ public:
 
     void load_input(string filename);  // LOAD classifications from an input file
     void insert_classification(string classification);  // INSERT classification into trie
-    string classify_input(string input);  // CLASSIFY input string using trie
+    void classify_input(string input);  // CLASSIFY input string using trie
     bool erase_classification(string classification);   // ERASE (remove) classification and its children
     void find_classification_path(Node* node, string current_path, vector<string> all_paths);   // Helper function for PRINT
     void print_classifications();   // PRINT all classifications in trie

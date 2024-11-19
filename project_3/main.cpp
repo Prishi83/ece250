@@ -34,7 +34,7 @@ int main() {
         }
 
         else if (command == "PRINT") {
-            cout << trie.print_classifications() << endl;
+            trie.print_classifications();
         }
 
         else if (command == "EMPTY") {
