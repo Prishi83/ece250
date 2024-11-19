@@ -25,7 +25,8 @@ public:
     void insert_classification(string classification);  // INSERT classification into trie
     string classify_input(string input);  // CLASSIFY input string using trie
     bool erase_classification(string classification);   // ERASE (remove) classification and its children
-    string print_classifications();   // PRINT all classifications in trie
+    void find_classification_path(Node* node, string current_path, vector<string> all_paths);   // Helper function for PRINT
+    void print_classifications();   // PRINT all classifications in trie
     bool is_trie_empty();  // Check if trie is EMPTY
     void clear_all_nodes();   // Remove (CLEAR) all nodes from trie
     int return_trie_size();   // Return SIZE of trie

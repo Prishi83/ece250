@@ -19,6 +19,19 @@ Trie::~Trie() {
 }
 
 
+// Helper function for INSERT, CLASSIFY, ERASE to check for capital letters
+void check_capital_letter_exception(string classification_string) {
+    string alphabet_capital = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (int i=0; i < (classification_string.size()); i++) {
+        for (int j=0; j < (alphabet_capital.size()); j++) {
+            if ((classification_string[i]) == (alphabet_capital[j])) {  // Check for capital letters
+                throw illegal_exception();  // Throw exception if capital letter detected (try-catch block)
+            }
+        }
+    }
+}
+
+
 // LOAD classifications from an input file
 void Trie::load_input(string filename) {
     ifstream file(filename);  // Open input file
@@ -73,17 +86,10 @@ void Trie::insert_classification(string classification) {
         istringstream stream(classification); // Classification string
         string classification_string;   // Used to store the extracted parts of the string input
         bool is_duplicate_classification = true;
-        string alphabet_capital = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         // Parse through classification string by using commas as the delimiter and traverse trie
         while (getline(stream, classification_string, ',')) {
-            for (int i=0; i < (classification_string.size()); i++) {
-                for (int j=0; j < (alphabet_capital.size()); j++) {
-                    if ((classification_string[i]) == (alphabet_capital[j])) {  // Check for capital letters
-                        throw illegal_exception();  // Throw exception if capital letter detected (try-catch block)
-                    }
-                }
-            }
+            check_capital_letter_exception(classification_string);  // Throw exception if captial letter found in helper function
 
             // Traverse children to see if classification has already been added to the trie
             bool classification_exists = false;
@@ -129,25 +135,160 @@ void Trie::insert_classification(string classification) {
 
 // CLASSIFY input string using trie
 string Trie::classify_input(string input) {
+    try {
+        Node* current = root;  // Start at trie's root node
+        istringstream stream(classification); // Classification string
+        string classification_string;   // Used to store the extracted parts of the string input
+        bool is_duplicate_classification = true;
 
+        // Parse through classification string by using commas as the delimiter and traverse trie
+        while (getline(stream, classification_string, ',')) {
+            check_capital_letter_exception(classification_string);  // Throw exception if captial letter found in helper function
+
+            // Traverse children to see if classification has already been added to the trie
+            bool classification_exists = false;
+            for (int i=0; i < (current->children.size()); i++) {
+                // If classification already exists (current node's child has value of classification_string), move into that child node
+                if (current->children[i]->node_value() == classification_string) { //&& current->children[i] != nullptr) {
+                    current = current->children[i];  // Move to that child node
+                    classification_exists = true;
+                    break; // break when classification_string is found
+                }
+            }
+
+            if (!classification_exists) {  // classification_string does not exist in the trie, so insert a new child node
+                is_duplicate_classification = false;
+                current->set_terminal_node(false);   // Set terminal node to false since we will add a child to this node
+                Node* new_classification_node = new Node();
+                new_classification_node->set_node_value(classification_string);  // Set the classification_string as the new node's value
+                current->children.push_back(new_classification_node);  // Add new node to the children vector
+                current = new_classification_node;  // Move to new child node
+            }
+        }
+
+        // Check if current node is a duplicate classification and is a terminal node
+        if (is_duplicate_classification && current->is_terminal_node()) {
+            cout << "failure" << endl;
+            return;
+        }
+
+        // Mark the terminal node if its not a dpulicate and it has no children
+        if (!is_duplicate_classification) {
+            current->set_terminal_node(true);   // Method implemented in Node class
+            size++;  // Update trie's size
+        }
+
+        cout << "success" << endl;  // Insertion was successful
+    }
+
+    catch (illegal_exception) {
+        cout << "illegal argument" << endl;   // Print if capital letters detected in classification
+    }
 }
 
 
 // ERASE (remove) classification and its children
 bool Trie::erase_classification(string classification) {
+    try {
+        Node* current = root;  // Start at trie's root node
+        istringstream stream(classification); // Classification string
+        string classification_string;   // Used to store the extracted parts of the string input
+        bool is_duplicate_classification = true;
 
+        // Parse through classification string by using commas as the delimiter and traverse trie
+        while (getline(stream, classification_string, ',')) {
+            check_capital_letter_exception(classification_string);  // Throw exception if captial letter found in helper function
+
+            // Traverse children to see if classification has already been added to the trie
+            bool classification_exists = false;
+            for (int i=0; i < (current->children.size()); i++) {
+                // If classification already exists (current node's child has value of classification_string), move into that child node
+                if (current->children[i]->node_value() == classification_string) { //&& current->children[i] != nullptr) {
+                    current = current->children[i];  // Move to that child node
+                    classification_exists = true;
+                    break; // break when classification_string is found
+                }
+            }
+
+            if (!classification_exists) {  // classification_string does not exist in the trie, so insert a new child node
+                is_duplicate_classification = false;
+                current->set_terminal_node(false);   // Set terminal node to false since we will add a child to this node
+                Node* new_classification_node = new Node();
+                new_classification_node->set_node_value(classification_string);  // Set the classification_string as the new node's value
+                current->children.push_back(new_classification_node);  // Add new node to the children vector
+                current = new_classification_node;  // Move to new child node
+            }
+        }
+
+        // Check if current node is a duplicate classification and is a terminal node
+        if (is_duplicate_classification && current->is_terminal_node()) {
+            cout << "failure" << endl;
+            return;
+        }
+
+        // Mark the terminal node if its not a dpulicate and it has no children
+        if (!is_duplicate_classification) {
+            current->set_terminal_node(true);   // Method implemented in Node class
+            size++;  // Update trie's size
+        }
+
+        cout << "success" << endl;  // Insertion was successful
+    }
+
+    catch (illegal_exception) {
+        cout << "illegal argument" << endl;   // Print if capital letters detected in classification
+    }
 }
 
 
-// PRINT all classifications in trie
-string Trie::print_classifications() {
+// Helper function for print_classifications()
+void Trie::find_classification_path(Node* node, string current_path, vector<string> all_paths) {
+    if (node->is_terminal_node()) {
+        all_paths.push_back(current_path);  // Add the terminal node's (current node) classification path to the all_paths vector
+    }
 
+    // Loop through all the children of the current node
+    for (int i = 0; i < node->children.size(); i++) {
+        string path_child;  // store the current child's classification path
+
+        if (current_path == "") {   // the root
+            path_child = node->children[i]->node_value();  // Initialize path with the root's child
+        } else {
+            path_child = current_path + "," + node->children[i]->node_value();   // add child's value to the current path if not at root
+        }
+
+        find_classification_path(node->children[i], path_child, all_paths);   // get all classification paths for the child recursively 
+                                                                              // start at child node and current path is updated to the child's path
+    }
+
+}
+
+// PRINT all classifications in trie
+void Trie::print_classifications() {
+    if (is_trie_empty()) {
+        cout << "trie is empty" << endl;
+    }
+
+    else {
+        vector<string> all_paths;
+        find_classification_path(root,"", all_paths);  // Get all classification paths starting from root node
+
+        string output_str = "";  // tore all formatted classifications to print
+        for (int i = 0; i < all_paths.size(); i++) {
+            if (i>=1) {
+                output_str += "_";  // Adds an underscore after each classification
+            }
+            output_str += all_paths[i];  // Add current path to the final output string
+        }
+
+        cout << output_str << endl;
+    }
 }
 
 
 // Check if trie is EMPTY
 bool Trie::is_trie_empty() {
-    if (root->children.empty()) {
+    if (root->children.empty()) {   // Empty when root has no children
         return true;
     }
     else {
