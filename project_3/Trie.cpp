@@ -96,7 +96,7 @@ void Trie::insert_classification(string classification) {
             bool classification_exists = false;
             for (int i=0; i < (current->children.size()); i++) {
                 // If classification already exists (current node's child has value of classification_string), move into that child node
-                if (current->children[i]->node_value() == classification_string) { //&& current->children[i] != nullptr) {
+                if (current->children[i]->node_value() == classification_string) {
                     current = current->children[i];  // Move to that child node
                     classification_exists = true;
                     break; // break when classification_string is found
@@ -189,55 +189,71 @@ void Trie::classify_input(string input) {
 
 
 // ERASE (remove) classification and its children
-bool Trie::erase_classification(string classification) {
+void Trie::erase_classification(string classification) {
     try {
-        Node* current = root;  // Start at trie's root node
-        istringstream stream(classification); // Classification string
-        string classification_string;   // Used to store the extracted parts of the string input
-        bool is_duplicate_classification = true;
-
-        // Parse through classification string by using commas as the delimiter and traverse trie
-        while (getline(stream, classification_string, ',')) {
-            check_capital_letter_exception(classification_string);  // Throw exception if captial letter found in helper function
-
-            // Traverse children to see if classification has already been added to the trie
-            bool classification_exists = false;
-            for (int i=0; i < (current->children.size()); i++) {
-                // If classification already exists (current node's child has value of classification_string), move into that child node
-                if (current->children[i]->node_value() == classification_string) { //&& current->children[i] != nullptr) {
-                    current = current->children[i];  // Move to that child node
-                    classification_exists = true;
-                    break; // break when classification_string is found
-                }
-            }
-
-            if (!classification_exists) {  // classification_string does not exist in the trie, so insert a new child node
-                is_duplicate_classification = false;
-                current->set_terminal_node(false);   // Set terminal node to false since we will add a child to this node
-                Node* new_classification_node = new Node();
-                new_classification_node->set_node_value(classification_string);  // Set the classification_string as the new node's value
-                current->children.push_back(new_classification_node);  // Add new node to the children vector
-                current = new_classification_node;  // Move to new child node
-            }
-        }
-
-        // Check if current node is a duplicate classification and is a terminal node
-        if (is_duplicate_classification && current->is_terminal_node()) {
+        if (is_trie_empty()) {  // Failure if empty trie
             cout << "failure" << endl;
             return;
         }
 
-        // Mark the terminal node if its not a dpulicate and it has no children
-        if (!is_duplicate_classification) {
-            current->set_terminal_node(true);   // Method implemented in Node class
-            size++;  // Update trie's size
+        Node* current = root;  // Start at trie's root node
+        istringstream stream(classification); // Classification string
+        string classification_string;   // store extracted parts of the classification input
+        vector<Node*> visited_path;    // Store visited nodes
+        vector<int> child_indexes; // Store the index of each node in the children vector
+
+        // Parse through classification string by using commas as the delimiter and traverse trie
+        while (getline(stream,classification_string,',')) {
+            check_capital_letter_exception(classification_string);  // Throw exception if captial letter found in helper function
+
+            bool classification_exists = false;
+            for (int i=0; i < (current->children.size()); i++) {
+                // If classification already exists
+                if (current->children[i]->node_value() == classification_string) {
+                    visited_path.push_back(current); // Store current node
+                    child_indexes.push_back(i);      // store current child's index
+                    current = current->children[i];  // Move to chil node
+                    classification_exists = true;    // Classifiation exists
+                    break;
+                }
+            }
+
+            if (!classification_exists) {   // classification does not exist in the trie so failure
+                cout << "failure" << endl;
+                return;
+            }
         }
 
-        cout << "success" << endl;  // Insertion was successful
+        // if the current node is not a terminal node, then it is not a complete path, so failure
+        if (!current->is_terminal_node()) {
+            cout << "failure" << endl;
+            return;
+        }
+
+        // Remove terminal node if it is the terminal node
+        current->set_terminal_node(false);
+        //delete current;
+
+        // Backtrack and remove nodes that are not needed
+        for (int i = (visited_path.size() -1); i>=0; i--) {   // LOop backwards through visited nodes
+            Node* parent = visited_path[i];   // Parent of the current node
+            int child_index = child_indexes[i];   // Index of current node in the children vector of its parent
+
+            if (current->children.empty() && !current->is_terminal_node()) {   // Children vecotr empty and node is not a terminal node
+                delete parent->children[child_index]; // Delete current child node
+                parent->children.erase(parent->children.begin() + child_index);  // Remove from the children's vector
+                current = parent; // Go to its parent
+            } else {
+                break; // break if node has children or is a terminal node
+            }
+        }
+
+        size--;
+        cout << "success" << endl;
     }
 
     catch (illegal_exception) {
-        cout << "illegal argument" << endl;   // Print if capital letters detected in classification
+        cout << "illegal argument" << endl;   // If capital letters detected in classification
     }
 }
 
