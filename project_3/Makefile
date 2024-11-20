@@ -1,5 +1,2 @@
-# all: ece250_socket.cpp main_example.cpp
-# 	g++ -std=c++11 ece250_socket.cpp main_example.cpp
-
-all: ece250_socket.cpp main.cpp Trie.cpp Node.cpp
-	g++ -std=c++11 ece250_socket.cpp main.cpp Trie.cpp Node.cpp
+all: trietest.cpp Trie.cpp Node.cpp ece250_socket.cpp
+	g++ -std=c++11 trietest.cpp Trie.cpp Node.cpp ece250_socket.cpp
