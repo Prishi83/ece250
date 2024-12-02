@@ -14,7 +14,7 @@ int main() {
             cin >> filename;
             cin >> type;
 
-            graph.load_dataset(filename);
+            graph.load_dataset(filename, type);
             cout << "success" << endl;
         }
 

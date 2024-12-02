@@ -20,7 +20,7 @@ public:
     Graph();   // Constructor
     ~Graph();  // Destructor
 
-    void load_dataset(string filename);  // Load dataset (.txt file) into graph (filename = "entities" or "relationships")
+    void load_dataset(string filename, string type);  // Load dataset (.txt file) into graph (type = "entities" or "relationships")
     void insert_relationship_edge(string source_ID, string label, string destination_ID, double weight);  // Insert a new relationship edge
     void insert_entity_node(string ID, string name, string type);  // Insert a new entity node
     void print_adjacent_nodes(string ID);  // Print all nodes adjacent to given ID node
