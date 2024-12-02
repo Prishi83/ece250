@@ -32,8 +32,13 @@ public:
 
     // For accessing private variables in the Graph class:
     string get_entity_id();    // get entity node's id
+    void set_entity_id(string new_id);    // update/set entity node's id
+    
     string get_entity_name();  // get entity node's name
+    void set_entity_name(string new_name);  // update/set entity node's name
+
     string get_entity_type();  // get entity node's type
+    void set_entity_type(string new_type);  // update/set entity node's type
 };
 
 #endif

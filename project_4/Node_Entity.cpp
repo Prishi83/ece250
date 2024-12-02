@@ -49,14 +49,29 @@ string Node_Entity::get_entity_id(){
     return entity_id;
 }
 
+// Set/update the node's id 
+void Node_Entity::set_entity_id(string new_id){
+    entity_id = new_id;
+}
+
 
 // Get the node's name
 string Node_Entity::get_entity_name() {
     return entity_name;
 }
 
+// Set/update the node's name
+void Node_Entity::set_entity_name(string new_name) {
+    entity_name = new_name;
+}
+
 
 // Get the node's type
 string Node_Entity::get_entity_type() {
     return entity_type;
+}
+
+// Set/update the node's type
+void Node_Entity::set_entity_type(string new_type) {
+    entity_type = new_type;
 }
