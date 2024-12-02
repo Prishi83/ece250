@@ -73,7 +73,7 @@ int main() {
             cin >> field_type;
             string field_string;
             cin >> field_string;
-            graph.find_all_nodes();  // print all nodes w/ given field str
+            graph.find_all_nodes(field_type, field_string);  // print all nodes w/ given field str
         }
 
         else if (command == "EXIT") {
