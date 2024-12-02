@@ -158,10 +158,11 @@ void Graph::delete_node(string ID) {
     for (int i=0; i<entity_nodes_list.size(); i++) {
         if (entity_nodes_list[i]->get_entity_id() == ID) {   // Node is in graph
             node_in_graph = true;
+
             Node_Entity * target_node = entity_nodes_list[i];
 
             for (int j=0; j<entity_nodes_list.size(); j++) {
-                entity_nodes_list[j]->delete_edge(target_node); // Remove edges from other nodes to target node
+                entity_nodes_list[j]->delete_edge(target_node); // delete edges from other nodes to target node
             }
 
             delete target_node;     // delete node memory
@@ -191,8 +192,37 @@ void Graph::highest_weight_path_nodes() {
 
 
 // Print all node id's w/ given field string
+    // field_type = "name" or "type"
+    // FINDALL name Mike_Cooper_Stachowsky
+    // FINDALL type instructor
 void Graph::find_all_nodes(string field_type, string field_string) {
+    bool target_id_in_graph = false;
 
+    for (int i=0; i<entity_nodes_list.size(); i++) {
+        Node_Entity * node = entity_nodes_list[i];
+
+        if (field_type == "name") {
+            if (field_string == node->get_entity_name()) {  // given field string found
+                target_id_in_graph = true;
+                cout << node->get_entity_id() << " ";   // print the target node's id
+            }
+        }
+
+        else if (field_type == "type") {
+            if (field_string == node->get_entity_type()) {  // given field string found
+                target_id_in_graph = true;
+                cout << node->get_entity_id() << " ";   // print the target node's id
+            }
+        }
+    }
+
+    if (target_id_in_graph) {
+        cout << endl;
+    }
+
+    else {
+        cout << "failure" << endl;
+    }
 }
 
 
