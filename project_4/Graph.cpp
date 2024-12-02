@@ -58,13 +58,60 @@ void Graph::load_dataset(string filename, string type) {
 
 // Insert a new relationship edge
 void Graph::insert_relationship_edge(string source_ID, string label, string destination_ID, double weight) {
+    Node_Entity * source_node = nullptr;        // pointer to source node
+    Node_Entity * destination_node = nullptr;   // pointer to desitination node
+
+    bool source_node_in_graph = false;
+    bool destination_node_in_graph = false;
+
+    bool edge_in_graph = false;
     
+    // Iterate through all nodes to see if source and destination nodes exist in the graph
+    for (int i=0; i<entity_nodes_list.size(); i++) {
+        if (entity_nodes_list[i]->get_entity_id() == source_ID) {
+            source_node = entity_nodes_list[i];
+            source_node_in_graph = true;
+        }
+
+        if (entity_nodes_list[i]->get_entity_id() == destination_ID) {
+            destination_node = entity_nodes_list[i];
+            destination_node_in_graph = true;
+        }
+    }
+
+    // Add/update edge if both source and destination nodes exist in the graph
+    if ((source_node_in_graph == true) && (destination_node_in_graph == true)) {
+        source_node->set_edge(destination_node, weight, label);
+        destination_node->set_edge(source_node, weight, label);
+
+        cout << "success" << endl;
+    }
+    
+    else {
+        cout << "failure" << endl;  // failure if source or destination node DNE in the graph
+    }
 }
 
 
 // Insert a new entity node
 void Graph::insert_entity_node(string ID, string name, string type) {
+    bool entity_in_graph = false;
 
+    for (i =0; i<entity_nodes_list.size(); i++) {
+        if (entity_nodes_list[i]->get_entity_id() == ID) {  // check if entity ID is already in graph; update if it is
+            entity_nodes_list[i]->set_entity_name(name);
+            entity_nodes_list[i]->set_entity_type(type);
+            entity_in_graph = true;
+        }
+    }
+
+    if (!entity_in_graph) {   // create and add a new node if it doesnt already exist in the graph
+        Node_Entity * node = new Node_Entity();
+        node->set_entity_id(ID);
+        node->set_entity_name(name);
+        node->set_entity_type(type);
+        entity_nodes_list.push_back(node);
+    }
 }
 
 
