@@ -8,7 +8,7 @@ using namespace std;
 
 class Node_Entity {
 private:
-    vector < tuple < Node_Entity* , double, string > > edges_list;  // Vector contains the edges of a node
+    vector < tuple < Node_Entity * , double, string > > edges_list; // Vector contains the edges of a node
                                                                     // tuple contains: pointer to adjacent node,
                                                                     //                 edge's weight,
                                                                     //                 edge's label
@@ -20,14 +20,14 @@ public:
     Node_Entity();   // Constructor
     ~Node_Entity();  // Destructor
 
-    vector < tuple < Node_Entity* , double, string > > get_edges();    // Get all of the edges (adjacent nodes)
-    void insert_edge(Node_Entity* adjacent_node, double weight, string label); // Insert edge b/w current and adjacent node
+    vector < tuple < Node_Entity * , double, string > > get_edges();    // Get all of the edges (adjacent nodes)
+    void insert_edge(Node_Entity * adjacent_node, double edge_weight, string edge_label); // Insert edge b/w current & adjacent node
                                                                                   // Create a tuple of:
                                                                                   //    pointer to adjacent node,
                                                                                   //    edge's weight,
                                                                                   //    edge's labe;
                                                                                   // Add this tuple to edges_list
-    void delete_edge(Node_Entity* adjacent_node);   // Delete edge between current and adjacent node
+    void delete_edge(Node_Entity * adjacent_node);   // Delete edge between current and adjacent node
                                                     // Find and delete adjacent node's tuple from edges_list of current node
 
     // For accessing private variables in the Graph class:
