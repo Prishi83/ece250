@@ -1,0 +1,12 @@
+LOAD simple_entities.txt entities
+LOAD simple_relationships.txt relationships
+PRINT 34a
+PRINT 341
+ENTITY 555 new_entity LT
+ENTITY 555 updated_entity LX
+RELATIONSHIP 555 works_with 341 0.7
+RELATIONSHIP 555 works_with 341 1.5
+PRINT 555
+PRINT 999
+RELATIONSHIP 999 works_with 555 0.9
+EXIT

@@ -21,13 +21,14 @@ public:
     ~Graph();  // Destructor
 
     void load_dataset(string filename, string type);  // Load dataset (.txt file) into graph (type = "entities" or "relationships")
-    void insert_relationship_edge(string source_ID, string label, string destination_ID, double weight);  // Insert a new relationship edge
+    bool insert_relationship_edge(string source_ID, string label, string destination_ID, double weight);  // Insert a new relationship edge
     void insert_entity_node(string ID, string name, string type);  // Insert a new entity node
     void print_adjacent_nodes(string ID);  // Print all nodes adjacent to given ID node
     void delete_node(string ID);  // Delete node with ID "ID" and any edges that contain it
     void highest_weight_path(string ID_1, string ID_2);  // Print nodes and labels along highest weight path b/w 2 nodes
     void highest_weight_path_nodes();  // Print 2 nodes with highest weight path b/w them
     void find_all_nodes(string field_type, string field_string);  // Print all node id's w/ given field string
+    void print_graph();
 };
 
 #endif

@@ -57,7 +57,7 @@ void Graph::load_dataset(string filename, string type) {
 
 
 // Insert a new relationship edge
-void Graph::insert_relationship_edge(string source_ID, string label, string destination_ID, double weight) {
+bool Graph::insert_relationship_edge(string source_ID, string label, string destination_ID, double weight) {
     Node_Entity * source_node = nullptr;        // pointer to source node
     Node_Entity * destination_node = nullptr;   // pointer to desitination node
 
@@ -83,12 +83,10 @@ void Graph::insert_relationship_edge(string source_ID, string label, string dest
     if ((source_node_in_graph == true) && (destination_node_in_graph == true)) {
         source_node->set_edge(destination_node, weight, label);
         destination_node->set_edge(source_node, weight, label);
-
-        cout << "success" << endl;
+        return true;
     }
-    
     else {
-        cout << "failure" << endl;  // failure if source or destination node DNE in the graph
+        return false;  // failure if source or destination node DNE in the graph
     }
 }
 
@@ -97,7 +95,7 @@ void Graph::insert_relationship_edge(string source_ID, string label, string dest
 void Graph::insert_entity_node(string ID, string name, string type) {
     bool entity_in_graph = false;
 
-    for (i =0; i<entity_nodes_list.size(); i++) {
+    for (int i =0; i<entity_nodes_list.size(); i++) {
         if (entity_nodes_list[i]->get_entity_id() == ID) {  // check if entity ID is already in graph; update if it is
             entity_nodes_list[i]->set_entity_name(name);
             entity_nodes_list[i]->set_entity_type(type);
@@ -117,13 +115,66 @@ void Graph::insert_entity_node(string ID, string name, string type) {
 
 // Print all nodes adjacent to given ID node
 void Graph::print_adjacent_nodes(string ID) {
+    // DO TRY-CATCH ERORR THING TO SEE IF ID INPUT IS VALID
 
+
+
+    bool node_in_graph = false;
+
+    for (int i=0; i< entity_nodes_list.size(); i++) {
+        if (entity_nodes_list[i]->get_entity_id() == ID) {   // Find node of given ID in the list of entity nodes
+            node_in_graph = true;
+
+            vector < tuple < Node_Entity * , double, string > > edges_list = entity_nodes_list[i]->get_edges_list(); // Get edges list of given ID node
+
+            if (edges_list.empty()) {   // no adjacent nodes so print blank line
+                cout << endl;
+                return;
+            }
+
+            for (int j=0; j<edges_list.size(); j++) {   // Iterate through the adjacent nodes
+                cout << get<0>(edges_list[j])->get_entity_id() << " ";   // Print all IDs with a space in between
+            }
+            cout << endl;
+        }
+    }
+
+    if (!node_in_graph) {
+        cout << "failure" << endl; // node with given ID not in graph so failure
+    }
 }
 
 
 // Delete node with ID "ID" and any edges that contain it
 void Graph::delete_node(string ID) {
+    // DO TRY-CATCH ERORR THING TO SEE IF ID INPUT IS VALID
 
+
+
+
+    // Find the node to delete
+    bool node_in_graph = false;
+
+    for (int i=0; i<entity_nodes_list.size(); i++) {
+        if (entity_nodes_list[i]->get_entity_id() == ID) {   // Node is in graph
+            node_in_graph = true;
+            Node_Entity * target_node = entity_nodes_list[i];
+
+            for (int j=0; j<entity_nodes_list.size(); j++) {
+                entity_nodes_list[j]->delete_edge(target_node); // Remove edges from other nodes to target node
+            }
+
+            delete target_node;     // delete node memory
+            entity_nodes_list.erase(entity_nodes_list.begin() + i); // remove node from node list (= deleted from graph)
+        }
+    }
+    
+    if (!node_in_graph) {  // node is not in graph
+        cout << "failure" << endl;
+    }
+    else {
+        cout << "success" << endl; // node found and deleted from graph
+    }
 }
 
 
@@ -142,4 +193,27 @@ void Graph::highest_weight_path_nodes() {
 // Print all node id's w/ given field string
 void Graph::find_all_nodes(string field_type, string field_string) {
 
+}
+
+
+
+
+// Print the entire graph: all nodes and their edges
+void Graph::print_graph() {
+    for (int i = 0; i < entity_nodes_list.size(); i++) {
+        Node_Entity* current_node = entity_nodes_list[i];
+        cout << current_node->get_entity_id() << ": "; // Print the current node's ID
+
+        vector<tuple<Node_Entity*, double, string>> edges_list = current_node->get_edges_list();
+        for (int j = 0; j < edges_list.size(); j++) {
+            Node_Entity* adjacent_node = get<0>(edges_list[j]);
+            double weight = get<1>(edges_list[j]);
+            string label = get<2>(edges_list[j]);
+
+            cout << "(" << adjacent_node->get_entity_id() << ", " << label << ", " << weight << ")";
+            if (j < edges_list.size() - 1) cout << " "; // Add space between edges
+        }
+
+        cout << endl; // Newline after each node's adjacency list
+    }
 }

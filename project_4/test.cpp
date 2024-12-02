@@ -28,7 +28,12 @@ int main() {
             cin >> destination_ID;
             cin >> weight;
 
-            graph.insert_relationship_edge(source_ID, label, destination_ID, weight);
+            if (graph.insert_relationship_edge(source_ID, label, destination_ID, weight)) {
+                cout << "success" << endl;
+            }
+            else {
+                cout << "failure" << endl;
+            }
         }
 
         else if (command == "ENTITY") {
