@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 using namespace std;
+#include <cmath>
 
 
 // Constructor definition
@@ -179,14 +180,110 @@ void Graph::delete_node(string ID) {
 }
 
 
-// Get nodes and labels along highest weight path between 2 nodes
+// Print nodes and labels along highest weight path between 2 nodes
 void Graph::highest_weight_path(string ID_1, string ID_2) {
+    // Node_Entity * source_node = nullptr;      // pointer to source node
+    // Node_Entity * destination_node = nullptr; // pointer to desitination node
+    // int source_node_index;
+    // int destination_node_index;
+
+    // bool source_node_in_graph = false;
+    // bool destination_node_in_graph = false;
+
+    // bool edge_in_graph = false;
+
+    // for (i=0; i<entity_nodes_list.size(); i++)  {
+    //     if (ID_1 == (entity_nodes_list[i]->get_entity_id())) {  // Find the node corresponding to ID_1
+    //         source_node = entity_nodes_list[i];
+    //         source_node_in_graph = true;
+    //         source_node_index = i;
+    //     }
+
+    //     if (ID_2 == (entity_nodes_list[i]->get_entity_id())) {  // Find the node corresponding to ID_2
+    //         destination_node = entity_nodes_list[i];
+    //         destination_node_in_graph = true;
+    //     }
+    // }
+
+    // if (!((source_node_in_graph == true) && (destination_node_in_graph == true))) { // source or destination node DNE in graph
+    //     cout << "failure" << endl;
+    //     return;
+    // }
+
+    // // DIJKSTRA'S ALGORITHM:
+    // // Each element in each vector represents a node
+    // vector<int> parent_list(entity_nodes_list.size(), -1);  // each element represents a node and holds its parents (used to create path later)
+    // vector<double> distance_list(entity_nodes_list.size(), INFINITY); // Create vector of type double with size of total nodes
+    //                                                                   // all elements initialized to infinity
+    // vector<bool> visited_node_list(entity_nodes_list.size(), false); // Create vector of type bool with size of total nodes
+    //                                                                  // all elements initialized to false since no nodes visited yet
+    
+    // distance_list[source_node_index] = 0;   // set distance of source node to 0
 
 }
 
 
 // Get 2 nodes with highest weight path between them
-void Graph::highest_weight_path_nodes() {
+void Graph::highest_weight_nodes() {
+    if (!entity_nodes_list.empty()) {
+        string source_node = "";
+        string destination_node = "";
+        double max_path_weight = -INFINITY; //initialize max weight to -infinity since we want the max weight (easier for comparison)
+
+        // DFS for each node:
+        for (int i=0; i< entity_nodes_list.size(); i++) {
+            vector <bool> visited_nodes(entity_nodes_list.size(), false); //visited_nodes vector of size of total nodes; all elements init to false
+            DFS_highest_weight_nodes(entity_nodes_list[i], 0, &max_path_weight, visited_nodes, &source_node, entity_nodes_list[i]->get_entity_id(), &destination_node);
+        }
+
+        if (max_path_weight == -INFINITY) {
+            cout << "failure" << endl;   // No paths found (disconnected nodes)
+        } else {
+            cout << source_node << " " << destination_node << " " << max_path_weight << endl;
+        }
+    }
+
+    else {
+        cout << "failure" << endl;  // graph is empty or no edges
+    }
+}
+
+// Helper function to implement DFS for highest_weight_nodes()
+void Graph::DFS_highest_weight_nodes(Node_Entity* current_node, double current_weight, double *max_path_weight, vector <bool> visited_nodes, string *source_node, string source_node_id, string *destination_node) {
+    int current_node_index;
+    for (int i=0; i<entity_nodes_list.size(); i++) {
+        if (current_node ==entity_nodes_list[i]) {   // get current_node's index in node list
+            current_node_index = i;
+        }
+    }
+    visited_nodes[current_node_index] = true;  // current node flagged as visited
+
+
+    vector < tuple < Node_Entity *, double, string > > edges_list = current_node->get_edges_list();  // get list of adjacent nodes for current node
+
+    for (int i=0; i<edges_list.size(); i++) {
+        double edge_weight = get<1>(edges_list[i]);      // Weight of edge is index 1 of tuple
+        Node_Entity * adjacent_node =  get<0>(edges_list[i]);   // Pointer to adjacent nodes is index 0 of tuple
+        
+        int adjacent_node_index;
+        for (int j=0; j<entity_nodes_list.size(); j++) {
+            if (adjacent_node == entity_nodes_list[j]) {
+                adjacent_node_index = j;
+            }
+        }
+
+        if (!visited_nodes[adjacent_node_index]) {  // Go through all adjacent nodes until they are all visited
+            double new_weight = current_weight + edge_weight;
+
+            if (new_weight > *max_path_weight) {  // if new_weight is max then update values of source/destination nodes and max weight
+                *source_node = source_node_id;
+                *destination_node = adjacent_node->get_entity_id();
+                *max_path_weight = new_weight;
+            }
+
+            DFS_highest_weight_nodes(adjacent_node, new_weight, max_path_weight, visited_nodes, source_node, source_node_id, destination_node); // Recursive call for adjacent node
+        }
+    }
 
 }
 
@@ -222,28 +319,5 @@ void Graph::find_all_nodes(string field_type, string field_string) {
 
     else {
         cout << "failure" << endl;
-    }
-}
-
-
-
-
-// Print the entire graph: all nodes and their edges
-void Graph::print_graph() {
-    for (int i = 0; i < entity_nodes_list.size(); i++) {
-        Node_Entity* current_node = entity_nodes_list[i];
-        cout << current_node->get_entity_id() << ": "; // Print the current node's ID
-
-        vector<tuple<Node_Entity*, double, string>> edges_list = current_node->get_edges_list();
-        for (int j = 0; j < edges_list.size(); j++) {
-            Node_Entity* adjacent_node = get<0>(edges_list[j]);
-            double weight = get<1>(edges_list[j]);
-            string label = get<2>(edges_list[j]);
-
-            cout << "(" << adjacent_node->get_entity_id() << ", " << label << ", " << weight << ")";
-            if (j < edges_list.size() - 1) cout << " "; // Add space between edges
-        }
-
-        cout << endl; // Newline after each node's adjacency list
     }
 }

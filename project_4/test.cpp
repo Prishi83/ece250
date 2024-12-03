@@ -70,7 +70,7 @@ int main() {
         }
 
         else if (command == "HIGHEST") {
-            graph.highest_weight_path_nodes();  // print 2 nodes with highest weight path b/w them
+            graph.highest_weight_nodes();  // print 2 nodes with highest weight path b/w them
         }
 
         else if (command == "FINDALL") {

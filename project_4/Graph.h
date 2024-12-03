@@ -26,9 +26,9 @@ public:
     void print_adjacent_nodes(string ID);  // Print all nodes adjacent to given ID node
     void delete_node(string ID);  // Delete node with ID "ID" and any edges that contain it
     void highest_weight_path(string ID_1, string ID_2);  // Print nodes and labels along highest weight path b/w 2 nodes
-    void highest_weight_path_nodes();  // Print 2 nodes with highest weight path b/w them
+    void highest_weight_nodes();  // Print 2 nodes with highest weight path b/w them
+    void DFS_highest_weight_nodes(Node_Entity* current_node, double current_weight, double * max_path_weight, vector <bool> visited_nodes, string * source_node, string source_id, string * destination_node); // Helper function to implement DFS for highest_weight_nodes()
     void find_all_nodes(string field_type, string field_string);  // Print all node id's w/ given field string
-    void print_graph();
 };
 
 #endif
