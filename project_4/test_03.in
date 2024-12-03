@@ -1,0 +1,37 @@
+LOAD entities.txt entities
+LOAD relationships.txt relationships
+ENTITY A1 Alice Person
+ENTITY B2 Bob Person
+ENTITY C3 Carol Organization
+ENTITY A1 Alicia Individual
+RELATIONSHIP A1 works_with B2 1.5
+RELATIONSHIP B2 reports_to C3 2.0
+RELATIONSHIP A1 works_with B2 3.0
+RELATIONSHIP A1 collaborates_with D4 1.0
+RELATIONSHIP X5 depends_on Y6 2.0
+PRINT A1
+PRINT B2
+PRINT C3
+PRINT D4
+DELETE B2
+PRINT A1
+PRINT C3
+DELETE D4
+FINDALL name Alice
+FINDALL name Alicia
+FINDALL type Person
+FINDALL type Organization
+FINDALL type Unknown
+PATH A1 C3
+PATH C3 A1
+PATH A1 D4
+HIGHEST
+PRINT A@
+DELETE B!
+PATH A1 B@
+PATH C3 !
+PRINT Z9
+DELETE Z9
+PATH Z9 Z8
+HIGHEST
+EXIT

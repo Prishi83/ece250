@@ -23,6 +23,23 @@ Graph::~Graph() {
 }
 
 
+// Try-Catch helper function for PRINT, DELETE, PATH to check for any characters other than uppercase/lowercase/numeral
+void check_input_characters_exception(string ID) {
+    string accepted_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+    for (int i=0; i<(ID.size()); i++) {
+        bool invalid_char_in_ID = true;
+        for (int j=0; j<(accepted_chars.size()); j++) {
+            if ((ID[i]) == (accepted_chars[j])) {  // Check for accepted characters
+                invalid_char_in_ID = false; 
+            }
+        }
+        if (invalid_char_in_ID) {
+            throw illegal_exception();  // Throw exception if invalid character detected (try-catch block)
+        }
+    }
+}
+
+
 // Load dataset (.txt file) into graph (type = "entities" or "relationships")
 void Graph::load_dataset(string filename, string type) {
     ifstream file(filename);  // Open input file
@@ -116,110 +133,125 @@ void Graph::insert_entity_node(string ID, string name, string type) {
 
 // Print all nodes adjacent to given ID node
 void Graph::print_adjacent_nodes(string ID) {
-    // DO TRY-CATCH ERORR THING TO SEE IF ID INPUT IS VALID
+    try {
+        check_input_characters_exception(ID);
 
+        bool node_in_graph = false;
 
+        for (int i=0; i< entity_nodes_list.size(); i++) {
+            if (entity_nodes_list[i]->get_entity_id() == ID) {   // Find node of given ID in the list of entity nodes
+                node_in_graph = true;
 
-    bool node_in_graph = false;
+                vector < tuple < Node_Entity * , double, string > > edges_list = entity_nodes_list[i]->get_edges_list(); // Get edges list of given ID node
 
-    for (int i=0; i< entity_nodes_list.size(); i++) {
-        if (entity_nodes_list[i]->get_entity_id() == ID) {   // Find node of given ID in the list of entity nodes
-            node_in_graph = true;
+                if (edges_list.empty()) {   // no adjacent nodes so print blank line
+                    cout << endl;
+                    return;
+                }
 
-            vector < tuple < Node_Entity * , double, string > > edges_list = entity_nodes_list[i]->get_edges_list(); // Get edges list of given ID node
-
-            if (edges_list.empty()) {   // no adjacent nodes so print blank line
+                for (int j=0; j<edges_list.size(); j++) {   // Iterate through the adjacent nodes
+                    cout << get<0>(edges_list[j])->get_entity_id() << " ";   // Print all IDs with a space in between
+                }
                 cout << endl;
-                return;
             }
+        }
 
-            for (int j=0; j<edges_list.size(); j++) {   // Iterate through the adjacent nodes
-                cout << get<0>(edges_list[j])->get_entity_id() << " ";   // Print all IDs with a space in between
-            }
-            cout << endl;
+        if (!node_in_graph) {
+            cout << "failure" << endl; // node with given ID not in graph so failure
         }
     }
 
-    if (!node_in_graph) {
-        cout << "failure" << endl; // node with given ID not in graph so failure
+    catch (illegal_exception) {
+        cout << "illegal argument" << endl;
     }
 }
 
 
 // Delete node with ID "ID" and any edges that contain it
 void Graph::delete_node(string ID) {
-    // DO TRY-CATCH ERORR THING TO SEE IF ID INPUT IS VALID
+    try {
+        check_input_characters_exception(ID);
+        
+        // Find the node to delete
+        bool node_in_graph = false;
 
+        for (int i=0; i<entity_nodes_list.size(); i++) {
+            if (entity_nodes_list[i]->get_entity_id() == ID) {   // Node is in graph
+                node_in_graph = true;
 
+                Node_Entity * target_node = entity_nodes_list[i];
 
+                for (int j=0; j<entity_nodes_list.size(); j++) {
+                    entity_nodes_list[j]->delete_edge(target_node); // delete edges from other nodes to target node
+                }
 
-    // Find the node to delete
-    bool node_in_graph = false;
-
-    for (int i=0; i<entity_nodes_list.size(); i++) {
-        if (entity_nodes_list[i]->get_entity_id() == ID) {   // Node is in graph
-            node_in_graph = true;
-
-            Node_Entity * target_node = entity_nodes_list[i];
-
-            for (int j=0; j<entity_nodes_list.size(); j++) {
-                entity_nodes_list[j]->delete_edge(target_node); // delete edges from other nodes to target node
+                delete target_node;     // delete node memory
+                entity_nodes_list.erase(entity_nodes_list.begin() + i); // remove node from node list (= deleted from graph)
             }
-
-            delete target_node;     // delete node memory
-            entity_nodes_list.erase(entity_nodes_list.begin() + i); // remove node from node list (= deleted from graph)
+        }
+        
+        if (!node_in_graph) {  // node is not in graph
+            cout << "failure" << endl;
+        }
+        else {
+            cout << "success" << endl; // node found and deleted from graph
         }
     }
-    
-    if (!node_in_graph) {  // node is not in graph
-        cout << "failure" << endl;
-    }
-    else {
-        cout << "success" << endl; // node found and deleted from graph
+
+    catch (illegal_exception) {
+        cout << "illegal argument" << endl;
     }
 }
 
 
 // Print nodes and labels along highest weight path between 2 nodes
 void Graph::highest_weight_path(string ID_1, string ID_2) {
-    // Node_Entity * source_node = nullptr;      // pointer to source node
-    // Node_Entity * destination_node = nullptr; // pointer to desitination node
-    // int source_node_index;
-    // int destination_node_index;
+    try {
+        check_input_characters_exception(ID_1);
+        check_input_characters_exception(ID_2);
+        
+        // Node_Entity * source_node = nullptr;      // pointer to source node
+        // Node_Entity * destination_node = nullptr; // pointer to desitination node
+        // int source_node_index;
+        // int destination_node_index;
 
-    // bool source_node_in_graph = false;
-    // bool destination_node_in_graph = false;
+        // bool source_node_in_graph = false;
+        // bool destination_node_in_graph = false;
 
-    // bool edge_in_graph = false;
+        // bool edge_in_graph = false;
 
-    // for (i=0; i<entity_nodes_list.size(); i++)  {
-    //     if (ID_1 == (entity_nodes_list[i]->get_entity_id())) {  // Find the node corresponding to ID_1
-    //         source_node = entity_nodes_list[i];
-    //         source_node_in_graph = true;
-    //         source_node_index = i;
-    //     }
+        // for (i=0; i<entity_nodes_list.size(); i++)  {
+        //     if (ID_1 == (entity_nodes_list[i]->get_entity_id())) {  // Find the node corresponding to ID_1
+        //         source_node = entity_nodes_list[i];
+        //         source_node_in_graph = true;
+        //         source_node_index = i;
+        //     }
 
-    //     if (ID_2 == (entity_nodes_list[i]->get_entity_id())) {  // Find the node corresponding to ID_2
-    //         destination_node = entity_nodes_list[i];
-    //         destination_node_in_graph = true;
-    //     }
-    // }
+        //     if (ID_2 == (entity_nodes_list[i]->get_entity_id())) {  // Find the node corresponding to ID_2
+        //         destination_node = entity_nodes_list[i];
+        //         destination_node_in_graph = true;
+        //     }
+        // }
 
-    // if (!((source_node_in_graph == true) && (destination_node_in_graph == true))) { // source or destination node DNE in graph
-    //     cout << "failure" << endl;
-    //     return;
-    // }
+        // if (!((source_node_in_graph == true) && (destination_node_in_graph == true))) { // source or destination node DNE in graph
+        //     cout << "failure" << endl;
+        //     return;
+        // }
 
-    // // DIJKSTRA'S ALGORITHM:
-    // // Each element in each vector represents a node
-    // vector<int> parent_list(entity_nodes_list.size(), -1);  // each element represents a node and holds its parents (used to create path later)
-    // vector<double> distance_list(entity_nodes_list.size(), INFINITY); // Create vector of type double with size of total nodes
-    //                                                                   // all elements initialized to infinity
-    // vector<bool> visited_node_list(entity_nodes_list.size(), false); // Create vector of type bool with size of total nodes
-    //                                                                  // all elements initialized to false since no nodes visited yet
-    
-    // distance_list[source_node_index] = 0;   // set distance of source node to 0
+        // // DIJKSTRA'S ALGORITHM:
+        // // Each element in each vector represents a node
+        // vector<int> parent_list(entity_nodes_list.size(), -1);  // each element represents a node and holds its parents (used to create path later)
+        // vector<double> distance_list(entity_nodes_list.size(), INFINITY); // Create vector of type double with size of total nodes
+        //                                                                   // all elements initialized to infinity
+        // vector<bool> visited_node_list(entity_nodes_list.size(), false); // Create vector of type bool with size of total nodes
+        //                                                                  // all elements initialized to false since no nodes visited yet
+        
+        // distance_list[source_node_index] = 0;   // set distance of source node to 0
+    }
 
+    catch (illegal_exception) {
+        cout << "illegal argument" << endl;
+    }
 }
 
 
